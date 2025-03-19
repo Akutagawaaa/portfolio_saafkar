@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ChangeEvent, KeyboardEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,12 @@ interface ChatMessage {
   content: string;
   timestamp: string;
   isAdmin: boolean;
+  type?: string;
+}
+
+interface WebSocketMessage {
+  type: string;
+  content: string;
 }
 
 export default function ChatWidget() {
@@ -30,21 +36,25 @@ export default function ChatWidget() {
 
       ws.onopen = () => {
         setIsConnecting(false);
-        setMessages(prev => [...prev, {
+        setMessages((prev: ChatMessage[]) => [...prev, {
           content: "Welcome to Saafkar Support! How can we help you today?",
           timestamp: new Date().toISOString(),
           isAdmin: true
         }]);
       };
 
-      ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
+      ws.onmessage = (event: MessageEvent) => {
+        const data = JSON.parse(event.data) as WebSocketMessage;
         if (data.type === 'message') {
-          setMessages((prev) => [...prev, data]);
+          setMessages((prev: ChatMessage[]) => [...prev, {
+            content: data.content,
+            timestamp: new Date().toISOString(),
+            isAdmin: false
+          }]);
         }
       };
 
-      ws.onerror = (error) => {
+      ws.onerror = (error: Event) => {
         console.error("WebSocket error:", error);
         setIsConnecting(false);
         toast({
@@ -80,10 +90,11 @@ export default function ChatWidget() {
 
   const sendMessage = () => {
     if (inputMessage.trim() && socket?.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify({
+      const message: WebSocketMessage = {
         type: 'message',
         content: inputMessage
-      }));
+      };
+      socket.send(JSON.stringify(message));
       setInputMessage("");
     } else if (!socket || socket.readyState !== WebSocket.OPEN) {
       toast({
@@ -91,6 +102,16 @@ export default function ChatWidget() {
         title: "Connection Error",
         description: "Not connected to chat. Please try refreshing."
       });
+    }
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputMessage(e.target.value);
+  };
+
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      sendMessage();
     }
   };
 
@@ -118,7 +139,7 @@ export default function ChatWidget() {
                 </Button>
               </CardHeader>
               <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
-                {messages.map((msg, index) => (
+                {messages.map((msg: ChatMessage, index: number) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 10 }}
@@ -146,8 +167,8 @@ export default function ChatWidget() {
                   <Input
                     placeholder="Type a message..."
                     value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                    onChange={handleInputChange}
+                    onKeyPress={handleKeyPress}
                     disabled={isConnecting || !socket || socket.readyState !== WebSocket.OPEN}
                   />
                   <Button 
