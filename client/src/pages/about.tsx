@@ -15,7 +15,7 @@ const teamMembers = [
     name: "Monica Shrivastava",
     role: "Co-Founder & CEO",
     description: "Driving innovation and customer satisfaction in premium car care",
-    image: "/assets/images/team/monica.jpeg",
+    image: "/assets/images/team/monica.jpg",
   },
 ];
 
@@ -28,7 +28,7 @@ const workSteps = [
   {
     icon: Home,
     title: "We Come to You",
-    description: "Our cleaning experts arrive at your location, equipped with eco-friendly products",
+    description: "Our cleaning experts arrive at your location, equipped with premium-grade products to deliver a flawless shine",
   },
   {
     icon: SparkleIcon,
@@ -55,8 +55,8 @@ const uspPoints = [
   },
   {
     icon: Leaf,
-    title: "Eco-Friendly Cleaning",
-    description: "Effective washes with minimal water wastage",
+    title: "Advanced Cleaning Solutions",
+    description: "High-quality cleaning for a spotless, long-lasting shine",
   },
   {
     icon: UserCheck,
@@ -90,8 +90,9 @@ export default function About() {
                 Our Mission
               </h1>
               <p className="text-xl text-muted-foreground">
-                To revolutionize the car cleaning industry by bringing premium,
-                eco-friendly cleaning services directly to our customers' doorstep.
+              To revolutionize and digitalize the car cleaning service for customers by bringing the premium care experience to their doorstep, 
+              while empowering cleaning partners with stable opportunities and fair earnings.
+              
               </p>
             </motion.div>
           </div>
@@ -109,9 +110,8 @@ export default function About() {
             >
               <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Vision</h2>
               <p className="text-lg text-muted-foreground">
-                To become the most trusted name in mobile car cleaning services,
-                known for our commitment to quality, convenience, and customer
-                satisfaction.
+              Our vision is to be your go-to for car cleaning, where quality meets 
+              convenience. We aim to be the name you trust for keeping your car looking its best, all from the comfort of your home.
               </p>
             </motion.div>
           </div>
